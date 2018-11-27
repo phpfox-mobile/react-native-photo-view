@@ -247,6 +247,7 @@
         _photoImageView.frame = frameToCenter;
     if (_onPhotoViewerScale) {
         _onPhotoViewerScale(@{
+                              @"minimum": @(self.minimumZoomScale),
                               @"scale": @(self.zoomScale),
                               @"target": self.reactTag
                               });
