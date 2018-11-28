@@ -7,6 +7,7 @@
 #import <React/RCTUtils.h>
 #import <React/UIView+React.h>
 #import <React/RCTImageLoader.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface RNPhotoView()
 
@@ -334,38 +335,29 @@
             _onPhotoViewerLoadStart(nil);
         }
 
+        SDWebImageOptions option = SDWebImageHighPriority;
+        option |= SDWebImageRetryFailed;
+
         // use default values from [imageLoader loadImageWithURLRequest:request callback:callback] method
-        [_bridge.imageLoader loadImageWithURLRequest:request
-                                        size:CGSizeZero
-                                       scale:1
-                                     clipped:YES
-                                  resizeMode:RCTResizeModeStretch
-                               progressBlock:^(int64_t progress, int64_t total) {
-                                   if (_onPhotoViewerProgress) {
-                                       _onPhotoViewerProgress(@{
-                                           @"loaded": @((double)progress),
-                                           @"total": @((double)total),
-                                       });
-                                   }
-                               }
-                            partialLoadBlock:nil
-                             completionBlock:^(NSError *error, UIImage *image) {
-                                                if (image) {
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [weakSelf setImage:image];
-                                                    });
-                                                    if (_onPhotoViewerLoad) {
-                                                        _onPhotoViewerLoad(nil);
-                                                    }
-                                                } else {
-                                                    if (_onPhotoViewerError) {
-                                                        _onPhotoViewerError(nil);
-                                                    }
-                                                }
-                                                if (_onPhotoViewerLoadEnd) {
-                                                    _onPhotoViewerLoadEnd(nil);
-                                                }
-                                            }];
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager loadImageWithURL:imageURL
+                          options:option
+                         progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL *targetURL) {
+                             //
+                         }
+                        completed:^(UIImage *image, NSData *data, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                            if (image) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [weakSelf setImage:image];
+                                });
+                                if (_onPhotoViewerLoad) {
+                                    _onPhotoViewerLoad(nil);
+                                }
+                            }
+                            if (_onPhotoViewerLoadEnd) {
+                                _onPhotoViewerLoadEnd(nil);
+                            }
+                        }];
     });
 }
 
