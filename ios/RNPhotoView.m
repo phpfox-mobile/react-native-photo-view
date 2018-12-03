@@ -153,9 +153,9 @@
         CGFloat yScale = boundsSize.height / imageSize.height;  // the scale needed to perfectly fit the image height-wise
         // Zooms standard portrait images on a 3.5in screen but not on a 4in screen.
         if (ABS(boundsAR - imageAR) < 0.17) {
-            zoomScale = MAX(xScale, yScale);
+            // zoomScale = MAX(xScale, yScale);
             // Ensure we don't zoom in or out too far, just in case
-            zoomScale = MIN(MAX(self.minimumZoomScale, zoomScale), self.maximumZoomScale);
+            // zoomScale = MIN(MAX(self.minimumZoomScale, zoomScale), self.maximumZoomScale);
         }
     }
     return zoomScale;
@@ -244,7 +244,7 @@
         frameToCenter.origin.y = 0;
     }
     
-    NSUInteger bounced = fabs(boundsSize.height - frameToCenter.size.height) < 16 || fabs(boundsSize.width - frameToCenter.size.width) < 16;
+    NSUInteger bounced =( frameToCenter.size.height - boundsSize.height < 16 ) &&  (frameToCenter.size.width - boundsSize.width < 16) ;
     
     // Center
     if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
