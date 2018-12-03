@@ -242,7 +242,9 @@
     } else {
         frameToCenter.origin.y = 0;
     }
-
+    
+    NSUInteger bounced = fabs(boundsSize.width - frameToCenter.size.width) < 16? 1:0;
+    
     // Center
     if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
         _photoImageView.frame = frameToCenter;
@@ -250,6 +252,7 @@
         _onPhotoViewerScale(@{
                               @"minimum": @(self.minimumZoomScale),
                               @"scale": @(self.zoomScale),
+                              @"bounced": @(bounced),
                               @"target": self.reactTag
                               });
     }
