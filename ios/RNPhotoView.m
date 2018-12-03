@@ -244,7 +244,7 @@
         frameToCenter.origin.y = 0;
     }
     
-    NSUInteger bounced = fabs(boundsSize.width - frameToCenter.size.width) < 16? 1:0;
+    NSUInteger bounced = fabs(boundsSize.height - frameToCenter.size.height) < 16 || fabs(boundsSize.width - frameToCenter.size.width) < 16;
     
     // Center
     if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
