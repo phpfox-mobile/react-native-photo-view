@@ -21,6 +21,7 @@
 
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) UIImage *loadingImage;
+@property (nonatomic, assign) BOOL displayed;
 
 @end
 
@@ -248,7 +249,7 @@
     // Center
     if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
         _photoImageView.frame = frameToCenter;
-    if (_onPhotoViewerScale) {
+    if (_onPhotoViewerScale && self.displayed) {
         _onPhotoViewerScale(@{
                               @"minimum": @(self.minimumZoomScale),
                               @"scale": @(self.zoomScale),
@@ -382,6 +383,7 @@
 - (void)setImage:(UIImage *)image {
     _image = image;
     [self displayWithImage:_image];
+    self.displayed =  YES;
 }
 
 - (void)setLoadingImage:(UIImage *)loadingImage {
@@ -414,6 +416,7 @@
     self.decelerationRate = UIScrollViewDecelerationRateFast;
     self.showsVerticalScrollIndicator = YES;
     self.showsHorizontalScrollIndicator = YES;
+    self.displayed =  NO;
 
     // Tap view for background
     _tapView = [[MWTapDetectingView alloc] initWithFrame:self.bounds];
