@@ -89,8 +89,10 @@
     touchY *= 1/self.zoomScale;
     touchX += self.contentOffset.x;
     touchY += self.contentOffset.y;
-
-    if (_onPhotoViewerTap) {
+    
+    if(self.zoomScale != self.minimumZoomScale){
+        [self setZoomScale:self.minimumZoomScale animated:YES];
+    }else if (_onPhotoViewerTap) {
         _onPhotoViewerTap(@{
                             @"point": @{
                                     @"x": @(touchX),
@@ -116,8 +118,10 @@
     touchY *= 1/self.zoomScale;
     touchX += self.contentOffset.x;
     touchY += self.contentOffset.y;
-
-    if (_onPhotoViewerViewTap) {
+    
+    if(self.zoomScale != self.minimumZoomScale){
+        [self setZoomScale:self.minimumZoomScale animated:YES];
+    }else if (_onPhotoViewerViewTap) {
         _onPhotoViewerViewTap(@{
                                 @"point": @{
                                         @"x": @(touchX),
