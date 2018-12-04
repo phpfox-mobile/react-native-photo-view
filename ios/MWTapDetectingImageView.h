@@ -14,6 +14,7 @@
 @interface MWTapDetectingImageView : UIImageView {}
 
 @property (nonatomic, weak) id <MWTapDetectingImageViewDelegate> tapDelegate;
+@property (nonatomic, weak) UITouch * touch;
 
 @end
 
