@@ -342,9 +342,6 @@
             _onPhotoViewerLoadStart(nil);
         }
 
-        SDWebImageOptions option = SDWebImageHighPriority;
-        option |= SDWebImageRetryFailed;
-
         // use default values from [imageLoader loadImageWithURLRequest:request callback:callback] method
         [_bridge.imageLoader loadImageWithURLRequest:request
                                         size:CGSizeZero
