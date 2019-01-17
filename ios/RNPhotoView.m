@@ -7,6 +7,7 @@
 #import <React/RCTUtils.h>
 #import <React/UIView+React.h>
 #import <React/RCTImageLoader.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 @interface RNPhotoView()
 
@@ -91,8 +92,8 @@
     
     if(self.zoomScale != self.minimumZoomScale){
         [self setZoomScale:self.minimumZoomScale animated:YES];
-    }else if (_onPhotoViewerTap) {
-        _onPhotoViewerTap(@{
+    }else if (self.onPhotoViewerTap) {
+        self.onPhotoViewerTap(@{
                             @"point": @{
                                     @"x": @(touchX),
                                     @"y": @(touchY),
@@ -152,8 +153,8 @@
         CGSize imageSize = _photoImageView.image.size;
         CGFloat boundsAR = boundsSize.width / boundsSize.height;
         CGFloat imageAR = imageSize.width / imageSize.height;
-        CGFloat xScale = boundsSize.width / imageSize.width;    // the scale needed to perfectly fit the image width-wise
-        CGFloat yScale = boundsSize.height / imageSize.height;  // the scale needed to perfectly fit the image height-wise
+//        CGFloat xScale = boundsSize.width / imageSize.width;    // the scale needed to perfectly fit the image width-wise
+//        CGFloat yScale = boundsSize.height / imageSize.height;  // the scale needed to perfectly fit the image height-wise
         // Zooms standard portrait images on a 3.5in screen but not on a 4in screen.
         if (ABS(boundsAR - imageAR) < 0.17) {
             // zoomScale = MAX(xScale, yScale);
@@ -252,6 +253,7 @@
     // Center
     if (!CGRectEqualToRect(_photoImageView.frame, frameToCenter))
         _photoImageView.frame = frameToCenter;
+    
     if (_onPhotoViewerScale && self.displayed) {
         _onPhotoViewerScale(@{
                               @"minimum": @(self.minimumZoomScale),
@@ -275,7 +277,6 @@
         self.contentSize = CGSizeMake(0, 0);
 
         // Set image
-        _photoImageView.image = image;
         _photoImageView.hidden = NO;
 
         // Setup photo frame
@@ -284,12 +285,38 @@
         photoImageViewFrame.size = image.size;
         _photoImageView.frame = photoImageViewFrame;
         self.contentSize = photoImageViewFrame.size;
-
+        
         // Set zoom to minimum zoom
         [self setMaxMinZoomScalesForCurrentBounds];
         [self setNeedsLayout];
     }
 }
+
+// Get and display images
+- (void)displayWithSize:(CGSize)size {
+    // Reset
+    //        self.maximumZoomScale = 1;
+    //        self.minimumZoomScale = 1;
+    self.zoomScale = 1;
+    self.contentSize = CGSizeMake(0, 0);
+    
+    // Set image
+    _photoImageView.hidden = NO;
+    self.displayed =  TRUE;
+    
+    // Setup photo frame
+    CGRect photoImageViewFrame;
+    photoImageViewFrame.origin = CGPointZero;
+    photoImageViewFrame.size = size;
+    
+    _photoImageView.frame = photoImageViewFrame;
+    self.contentSize = photoImageViewFrame.size;
+    
+    // Set zoom to minimum zoom
+    [self setMaxMinZoomScalesForCurrentBounds];
+    [self setNeedsLayout];
+}
+
 
 #pragma mark - Setter
 
@@ -337,43 +364,33 @@
             request = [mutableRequest copy];
         }
 
-        __weak RNPhotoView *weakSelf = self;
         if (_onPhotoViewerLoadStart) {
             _onPhotoViewerLoadStart(nil);
         }
-
-        // use default values from [imageLoader loadImageWithURLRequest:request callback:callback] method
-        [_bridge.imageLoader loadImageWithURLRequest:request
-                                        size:CGSizeZero
-                                       scale:1
-                                     clipped:YES
-                                  resizeMode:RCTResizeModeStretch
-                               progressBlock:^(int64_t progress, int64_t total) {
-                                   if (_onPhotoViewerProgress) {
-                                       _onPhotoViewerProgress(@{
-                                           @"loaded": @((double)progress),
-                                           @"total": @((double)total),
-                                       });
-                                   }
+        
+        SDWebImageOptions options = 0;
+        options |= SDWebImageRetryFailed;
+        
+        [_photoImageView sd_setImageWithURL:imageURL
+                           placeholderImage:nil
+                                    options:options
+                                  completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
+                                      if (error) {
+                                          if (_onPhotoViewerError) {
+                                              _onPhotoViewerError(nil);
                                }
-                            partialLoadBlock:nil
-                             completionBlock:^(NSError *error, UIImage *image) {
-                                                if (image) {
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [weakSelf setImage:image];
-                                                    });
+                                      } else {
+                                          
+                                          [self displayWithSize: image.size];
                                                     if (_onPhotoViewerLoad) {
                                                         _onPhotoViewerLoad(nil);
-                                                    }
-                                                } else {
-                                                    if (_onPhotoViewerError) {
-                                                        _onPhotoViewerError(nil);
                                                     }
                                                 }
                                                 if (_onPhotoViewerLoadEnd) {
                                                     _onPhotoViewerLoadEnd(nil);
                                                 }
                                             }];
+
     });
 }
 

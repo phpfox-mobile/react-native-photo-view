@@ -8,10 +8,25 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDWebImageDownloader.h>
+
+// Import from the FLAnimated image CocoaPod if it's available.
+#if __has_include(<FLAnimatedImage/FLAnimatedImageView.h>)
+#import <FLAnimatedImage/FLAnimatedImageView.h>
+#import <FLAnimatedImage/FLAnimatedImage.h>
+// Import from the version within SDWebImage otherwise.
+#elif __has_include(<SDWebImage/FLAnimatedImageView.h>)
+#import <SDWebImage/FLAnimatedImageView.h>
+#endif
+#import <React/RCTComponent.h>
+#import <React/RCTResizeMode.h>
+
+
 
 @protocol MWTapDetectingImageViewDelegate;
 
-@interface MWTapDetectingImageView : UIImageView {}
+@interface MWTapDetectingImageView : FLAnimatedImageView {}
 
 @property (nonatomic, weak) id <MWTapDetectingImageViewDelegate> tapDelegate;
 @property (nonatomic, weak) UITouch * touch;
