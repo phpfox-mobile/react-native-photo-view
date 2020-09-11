@@ -18,6 +18,8 @@
 // Import from the version within SDWebImage otherwise.
 #elif __has_include(<SDWebImage/FLAnimatedImageView.h>)
 #import <SDWebImage/FLAnimatedImageView.h>
+#elif __has_include(<SDWebImageFLPlugin/FLAnimatedImageView+WebCache.h>)
+#import <SDWebImageFLPlugin/FLAnimatedImageView+WebCache.h>
 #endif
 #import <React/RCTComponent.h>
 #import <React/RCTResizeMode.h>
