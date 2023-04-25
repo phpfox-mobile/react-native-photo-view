@@ -12,23 +12,26 @@
 #import <SDWebImage/SDWebImageDownloader.h>
 
 // Import from the FLAnimated image CocoaPod if it's available.
-#if __has_include(<FLAnimatedImage/FLAnimatedImageView.h>)
-#import <FLAnimatedImage/FLAnimatedImageView.h>
-#import <FLAnimatedImage/FLAnimatedImage.h>
-// Import from the version within SDWebImage otherwise.
-#elif __has_include(<SDWebImage/FLAnimatedImageView.h>)
-#import <SDWebImage/FLAnimatedImageView.h>
-#elif __has_include(<SDWebImageFLPlugin/FLAnimatedImageView+WebCache.h>)
-#import <SDWebImageFLPlugin/FLAnimatedImageView+WebCache.h>
-#endif
+// #if __has_include(<FLAnimatedImage/FLAnimatedImageView.h>)
+// #import <FLAnimatedImage/FLAnimatedImageView.h>
+// #import <FLAnimatedImage/FLAnimatedImage.h>
+// // Import from the version within SDWebImage otherwise.
+// #elif __has_include(<SDWebImage/FLAnimatedImageView.h>)
+// #import <SDWebImage/FLAnimatedImageView.h>
+// #elif __has_include(<SDWebImageFLPlugin/FLAnimatedImageView+WebCache.h>)
+// #import <SDWebImageFLPlugin/FLAnimatedImageView+WebCache.h>
+// #endif
+
 #import <React/RCTComponent.h>
 #import <React/RCTResizeMode.h>
 
+#import <SDWebImage/SDAnimatedImageView+WebCache.h>
+#import <SDWebImage/SDWebImageDownloader.h>
 
 
 @protocol MWTapDetectingImageViewDelegate;
 
-@interface MWTapDetectingImageView : FLAnimatedImageView {}
+@interface MWTapDetectingImageView : SDAnimatedImageView {}
 
 @property (nonatomic, weak) id <MWTapDetectingImageViewDelegate> tapDelegate;
 @property (nonatomic, weak) UITouch * touch;
