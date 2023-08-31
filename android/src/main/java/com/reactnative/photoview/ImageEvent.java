@@ -74,7 +74,7 @@ public class ImageEvent extends Event<ImageEvent> {
 
   @Override
   public void dispatch(RCTEventEmitter rctEventEmitter) {
-    rctEventEmitter.receiveEvent(getViewTag(), getEventName(), mMap);
+    // rctEventEmitter.receiveEvent(getViewTag(), getEventName(), mMap);
   }
 
   public ImageEvent setExtras(WritableMap map){
